@@ -1,0 +1,25 @@
+### Itero API
+POST http://localhost:8080/api/itero/login
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/itero/status
+
+###
+GET http://localhost:8080/api/itero/patients
+###
+POST http://localhost:8080/api/itero/logout
+Content-Type: application/json
+
+### ThreeShape API
+POST http://localhost:8080/api/threeshape/login
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/threeshape/status
+
+###
+POST http://localhost:8080/api/threeshape/logout
+
+###
+GET http://localhost:8080/api/threeshape/patients

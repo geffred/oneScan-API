@@ -1,0 +1,79 @@
+[13352:15932:0630/130959.570:INFO:components\enterprise\browser\controller\chrome_browser_cloud_management_controller.cc:202] No machine level policy manager exists.
+[13352:15932:0630/131001.654:INFO:CONSOLE:0] "Error with Feature-Policy header: Unrecognized feature: '*'.", source:  (0)
+[13352:15932:0630/131003.162:INFO:CONSOLE:0] "Refused to load the image 'https://policy.app.cookieinformation.com/static/images/kunder/banner_logos/popup-logo-placeholder.png' because it violates the following Content Security Policy directive: "img-src 'self' 'unsafe-inline' https://ssl.gstatic.com/ https://coi-prod.azureedge.net
+    *.3shape.com 
+    *.3shapecommunicate.com
+    *.3shapecommunicate.cn
+    *.productmarketingcloud.com
+    *.blob.core.windows.net
+    *.blob.core.chinacloudapi.cn
+    data: 
+    blob:".
+", source: https://portal.3shapecommunicate.com/login (0)
+[13352:15932:0630/131003.171:INFO:CONSOLE:0] "Refused to load the image 'https://policy.app.cookieinformation.com/static/images/kunder/banner_logos/popup-logo-placeholder.png' because it violates the following Content Security Policy directive: "img-src 'self' 'unsafe-inline' https://ssl.gstatic.com/ https://coi-prod.azureedge.net
+    *.3shape.com 
+    *.3shapecommunicate.com
+    *.3shapecommunicate.cn
+    *.productmarketingcloud.com
+    *.blob.core.windows.net
+    *.blob.core.chinacloudapi.cn
+    data: 
+    blob:".
+", source: https://portal.3shapecommunicate.com/login (0)
+[13352:15932:0630/131020.812:INFO:CONSOLE:0] "Error with Feature-Policy header: Unrecognized feature: '*'.", source:  (0)
+[13352:15932:0630/131021.829:INFO:CONSOLE:0] "Refused to load the image 'https://policy.app.cookieinformation.com/static/images/kunder/banner_logos/popup-logo-placeholder.png' because it violates the following Content Security Policy directive: "img-src 'self' 'unsafe-inline' https://ssl.gstatic.com/ https://coi-prod.azureedge.net
+    *.3shape.com 
+    *.3shapecommunicate.com
+    *.3shapecommunicate.cn
+    *.productmarketingcloud.com
+    *.blob.core.windows.net
+    *.blob.core.chinacloudapi.cn
+    data: 
+    blob:".
+", source: https://portal.3shapecommunicate.com/auth-callback?code=4E59844B2F082D211636071801C08E8607CD9E8C9835B2D0A7B7220172F62FEC-1&scope=openid%20api%20data.users.manage%20data.companies.manage%20treatmentreview.orderformservice.manage%20treatmentreview.proposalfeedbackservice.manage%20treatmentreview.modelservice.manage%20communicate.connections.manage&state=VHo4SExROHJoQ2ViX3J4TTZlb3REb3NEUWtFYmJWfi44d0ZQcXVHRHp5Nzdp&session_state=x4IwxNxCjrUio4UcdzxIw82sc5DqIxTuEbckW3qR4ng.EBA5E0F20BC8B7BB98481424D04DBFA7&iss=https:%2F%2Fidentity.3shape.com (0)
+[13352:15932:0630/131021.829:INFO:CONSOLE:0] "Refused to load the image 'https://policy.app.cookieinformation.com/static/images/kunder/banner_logos/popup-logo-placeholder.png' because it violates the following Content Security Policy directive: "img-src 'self' 'unsafe-inline' https://ssl.gstatic.com/ https://coi-prod.azureedge.net
+    *.3shape.com 
+    *.3shapecommunicate.com
+    *.3shapecommunicate.cn
+    *.productmarketingcloud.com
+    *.blob.core.windows.net
+    *.blob.core.chinacloudapi.cn
+    data: 
+    blob:".
+", source: https://portal.3shapecommunicate.com/auth-callback?code=4E59844B2F082D211636071801C08E8607CD9E8C9835B2D0A7B7220172F62FEC-1&scope=openid%20api%20data.users.manage%20data.companies.manage%20treatmentreview.orderformservice.manage%20treatmentreview.proposalfeedbackservice.manage%20treatmentreview.modelservice.manage%20communicate.connections.manage&state=VHo4SExROHJoQ2ViX3J4TTZlb3REb3NEUWtFYmJWfi44d0ZQcXVHRHp5Nzdp&session_state=x4IwxNxCjrUio4UcdzxIw82sc5DqIxTuEbckW3qR4ng.EBA5E0F20BC8B7BB98481424D04DBFA7&iss=https:%2F%2Fidentity.3shape.com (0)
+[13352:15932:0630/131024.576:INFO:CONSOLE:1] "Unhandled Promise rejection: Failed to fetch ; Zone: <root> ; Task: Promise.then ; Value: TypeError: Failed to fetch TypeError: Failed to fetch
+    at https://portal.3shapecommunicate.com/polyfills.4e5e10e03af71f49.js:1:21261
+    at N.<computed> (https://portal.3shapecommunicate.com/polyfills.4e5e10e03af71f49.js:1:15072)
+    at E (https://portal.3shapecommunicate.com/main.02afe0e4c3c2dafc.js:1:1508599)
+    at Sc (https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:195:316)
+    at em (https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:375:87)
+    at RM (https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:770:227)
+    at TM.flush (https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:777:405)
+    at k.flush (https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:795:184)
+    at LL.P (https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:807:187)
+    at https://www.googletagmanager.com/gtag/js?id=G-TLETE5THJK:743:126", source: https://portal.3shapecommunicate.com/main.02afe0e4c3c2dafc.js (1)
+[13352:15932:0630/131024.578:INFO:CONSOLE:0] "Error with Feature-Policy header: Unrecognized feature: '*'.", source:  (0)
+[15716:22236:0630/131024.580:WARNING:net\spdy\spdy_session.cc:3054] Received HEADERS for invalid stream 15
+[15716:22236:0630/131024.665:WARNING:net\spdy\spdy_session.cc:3054] Received HEADERS for invalid stream 3
+[13352:15932:0630/131025.096:INFO:CONSOLE:0] "Refused to load the image 'https://policy.app.cookieinformation.com/static/images/kunder/banner_logos/popup-logo-placeholder.png' because it violates the following Content Security Policy directive: "img-src 'self' 'unsafe-inline' https://ssl.gstatic.com/ https://coi-prod.azureedge.net
+    *.3shape.com 
+    *.3shapecommunicate.com
+    *.3shapecommunicate.cn
+    *.productmarketingcloud.com
+    *.blob.core.windows.net
+    *.blob.core.chinacloudapi.cn
+    data: 
+    blob:".
+", source: https://portal.3shapecommunicate.com/cases (0)
+[13352:15932:0630/131025.096:INFO:CONSOLE:0] "Refused to load the image 'https://policy.app.cookieinformation.com/static/images/kunder/banner_logos/popup-logo-placeholder.png' because it violates the following Content Security Policy directive: "img-src 'self' 'unsafe-inline' https://ssl.gstatic.com/ https://coi-prod.azureedge.net
+    *.3shape.com 
+    *.3shapecommunicate.com
+    *.3shapecommunicate.cn
+    *.productmarketingcloud.com
+    *.blob.core.windows.net
+    *.blob.core.chinacloudapi.cn
+    data: 
+    blob:".
+", source: https://portal.3shapecommunicate.com/cases (0)
+[15716:22236:0630/131025.322:WARNING:net\spdy\spdy_session.cc:3054] Received HEADERS for invalid stream 21
+[15716:17720:0630/131150.621:WARNING:net\extras\sqlite\sqlite_persistent_store_backend_base.cc:176] Failed to post task from FlushAndNotifyInBackground@net\extras\sqlite\sqlite_persistent_store_backend_base.cc:226 to client_task_runner_.
