@@ -1,10 +1,8 @@
 package com.onescan.app.services;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
@@ -14,35 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class IteroSeleniumService {
-
+public class IteroSeleniumService extends BaseSeleniumService {
     private final Dotenv dotenv = Dotenv.load();
-    private WebDriver driver;
-    private boolean isLoggedIn = false;
 
-    public void initializeDriver() {
-        if (driver == null || !isDriverAlive()) {
-            WebDriverManager.chromedriver().setup();
-
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments(
-                    "--no-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--remote-allow-origins=*",
-                    "--disable-gpu",
-                    "--window-size=1920,1080",
-                    "--headless=new");
-
-            try {
-                driver = new ChromeDriver(options);
-                driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(15));
-                driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-            } catch (Exception e) {
-                throw new RuntimeException("Échec de l'initialisation de ChromeDriver: " + e.getMessage());
-            }
-        }
-    }
-
+    @Override
     public String login() {
         initializeDriver();
 
@@ -55,7 +28,6 @@ public class IteroSeleniumService {
 
         try {
             driver.get("https://bff.cloud.myitero.com/login-legacy");
-
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
             WebElement emailField = wait.until(ExpectedConditions.elementToBeClickable(
@@ -72,7 +44,6 @@ public class IteroSeleniumService {
                     By.cssSelector("input#btn-login")));
             loginButton.click();
 
-            // Attendre une redirection ou un élément visible après login
             wait.until(ExpectedConditions.urlContains("/labs/home"));
 
             isLoggedIn = true;
@@ -84,6 +55,7 @@ public class IteroSeleniumService {
         }
     }
 
+    @Override
     public List<String> fetchPatients() {
         List<String> patients = new ArrayList<>();
 
@@ -97,7 +69,6 @@ public class IteroSeleniumService {
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
-            // Attendre que les lignes de patients apparaissent
             List<WebElement> rows = wait.until(
                     ExpectedConditions.presenceOfAllElementsLocatedBy(
                             By.cssSelector("tbody tr")));
@@ -127,6 +98,7 @@ public class IteroSeleniumService {
         return patients;
     }
 
+    @Override
     public String logout() {
         if (driver != null) {
             closeDriver();
@@ -136,50 +108,19 @@ public class IteroSeleniumService {
         return "Déjà déconnecté.";
     }
 
-    private boolean verifyLoggedIn() {
+    @Override
+    protected boolean verifyLoggedIn() {
         if (!isDriverAlive())
             return false;
 
         try {
             driver.navigate().to("https://bff.cloud.myitero.com/labs/home");
-
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.presenceOfElementLocated(
-                    By.cssSelector(".image-link"))); // à adapter si nécessaire
-
+                    By.cssSelector(".image-link")));
             return true;
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private void handleError(Exception e) {
-        closeDriver();
-        System.err.println("Erreur Selenium (Itero): " + e.getMessage());
-    }
-
-    public void closeDriver() {
-        if (driver != null) {
-            try {
-                driver.quit();
-            } catch (Exception e) {
-                System.err.println("Erreur lors de la fermeture du driver: " + e.getMessage());
-            } finally {
-                driver = null;
-            }
-        }
-    }
-
-    private boolean isDriverAlive() {
-        try {
-            driver.getTitle(); // essaie d'interroger une propriété pour détecter un crash
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isLoggedIn() {
-        return isLoggedIn;
     }
 }
