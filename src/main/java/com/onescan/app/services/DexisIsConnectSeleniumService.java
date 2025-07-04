@@ -82,7 +82,7 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
 
         try {
             driver.navigate().to("https://dentalconnect.dexis.com/main.php");
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
 
             // Attendre que la liste des patients soit chargée
             wait.until(ExpectedConditions.presenceOfElementLocated(

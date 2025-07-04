@@ -28,7 +28,7 @@ public class IteroSeleniumService extends BaseSeleniumService {
 
         try {
             driver.get("https://bff.cloud.myitero.com/login-legacy");
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
 
             WebElement emailField = wait.until(ExpectedConditions.elementToBeClickable(
                     By.cssSelector("input[formcontrolname='username']")));
