@@ -10,6 +10,16 @@ public abstract class BaseSeleniumService implements DentalPlatformService {
     protected WebDriver driver;
     protected boolean isLoggedIn = false;
 
+    protected boolean ensureLoggedIn() {
+        if (isLoggedIn && verifyLoggedIn()) {
+            return true;
+        }
+
+        // Tentative de reconnexion
+        String loginResult = login();
+        return loginResult.startsWith("Connexion réussie") || loginResult.equals("Déjà connecté.");
+    }
+
     protected void initializeDriver() {
         if (driver == null || !isDriverAlive()) {
             WebDriverManager.chromedriver().setup();

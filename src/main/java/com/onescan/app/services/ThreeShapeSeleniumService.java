@@ -28,7 +28,7 @@ public class ThreeShapeSeleniumService extends BaseSeleniumService {
 
         try {
             driver.get("https://portal.3shapecommunicate.com/login");
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
 
             acceptCookiesIfPresent(wait);
             performLoginSteps(wait, email, password);
@@ -46,8 +46,9 @@ public class ThreeShapeSeleniumService extends BaseSeleniumService {
     public List<String> fetchPatients() {
         List<String> patients = new ArrayList<>();
 
-        if (!isLoggedIn || !verifyLoggedIn()) {
-            patients.add("Erreur : Non connecté à ThreeShape");
+        // Tentative automatique de connexion si nécessaire
+        if (!ensureLoggedIn()) {
+            patients.add("Erreur : Impossible de se connecter à Itero");
             return patients;
         }
 

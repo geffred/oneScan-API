@@ -59,8 +59,9 @@ public class IteroSeleniumService extends BaseSeleniumService {
     public List<String> fetchPatients() {
         List<String> patients = new ArrayList<>();
 
-        if (!isLoggedIn || !verifyLoggedIn()) {
-            patients.add("Erreur : Non connecté à Itero");
+        // Tentative automatique de connexion si nécessaire
+        if (!ensureLoggedIn()) {
+            patients.add("Erreur : Impossible de se connecter à Itero");
             return patients;
         }
 
