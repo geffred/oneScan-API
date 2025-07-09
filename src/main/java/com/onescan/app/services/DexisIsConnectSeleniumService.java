@@ -88,7 +88,6 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
             wait.until(ExpectedConditions.presenceOfElementLocated(
                     By.cssSelector("li[id^='caseMaster_']")));
 
-            // Récupérer tous les éléments li représentant les patients
             List<WebElement> caseElements = driver.findElements(
                     By.cssSelector("li[id^='caseMaster_']"));
 
