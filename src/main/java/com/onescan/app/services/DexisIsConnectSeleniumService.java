@@ -5,7 +5,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.onescan.app.Entity.Commande;
+import com.onescan.app.Entity.Plateforme;
+import com.onescan.app.repository.CommandeRepository;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -13,52 +18,60 @@ import java.util.List;
 
 @Service
 public class DexisIsConnectSeleniumService extends BaseSeleniumService {
+
+    // Chargement des variables d'environnement (.env)
     private final Dotenv dotenv = Dotenv.load();
 
+    @Autowired
+    private CommandeRepository commandeRepository;
+
+    /**
+     * Connexion à la plateforme Dexis.
+     */
     @Override
     public String login() {
         initializeDriver();
 
+        // Vérifie si l'utilisateur est déjà connecté
         if (isLoggedIn && verifyLoggedIn()) {
             return "Déjà connecté.";
         }
 
+        // Récupération des identifiants depuis le fichier .env
         String email = dotenv.get("ISCONNECT_USERNAME");
         String password = dotenv.get("ISCONNECT_PASSWORD");
 
         try {
-            // Étape 1: Accès à la page de login
+            // Étape 1 : Ouverture de la page d'accueil
             driver.get("https://dentalconnect.dexis.com/");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-            // Cliquer sur le bouton "Accès au service"
-            WebElement loginLink = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("a#login")));
+            // Clic sur le bouton de connexion
+            WebElement loginLink = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a#login")));
             loginLink.click();
 
-            // Étape 2: Saisie de l'email
-            WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.cssSelector("input#email")));
+            // Étape 2 : Saisie de l'email
+            WebElement emailField = wait
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input#email")));
             emailField.clear();
             emailField.sendKeys(email);
 
-            // Cliquer sur "Continuer"
-            WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("button#continue")));
+            // Clic sur "Continuer"
+            WebElement continueButton = wait
+                    .until(ExpectedConditions.elementToBeClickable(By.cssSelector("button#continue")));
             continueButton.click();
 
-            // Étape 3: Saisie du mot de passe
-            WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.cssSelector("input#password")));
+            // Étape 3 : Saisie du mot de passe
+            WebElement passwordField = wait
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input#password")));
             passwordField.clear();
             passwordField.sendKeys(password);
 
-            // Cliquer sur "Se connecter"
-            WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("button#next")));
+            // Clic sur "Se connecter"
+            WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button#next")));
             loginButton.click();
 
-            // Vérification de la connexion réussie
+            // Vérification de la redirection après connexion
             wait.until(ExpectedConditions.urlContains("main.php"));
 
             isLoggedIn = true;
@@ -70,73 +83,78 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
         }
     }
 
+    /**
+     * Récupération des commandes/patients depuis Dexis.
+     */
     @Override
-    public List<String> fetchPatients() {
-        List<String> patients = new ArrayList<>();
+    public List<Commande> fetchCommandes() {
+        List<Commande> commandes = new ArrayList<>();
 
-        // Tentative automatique de connexion si nécessaire
+        // Vérifie que l'utilisateur est connecté avant de continuer
         if (!ensureLoggedIn()) {
-            patients.add("Erreur : Impossible de se connecter à Itero");
-            return patients;
+            System.err.println("Erreur : Impossible de se connecter à Dexis");
+            return commandes;
         }
 
         try {
             driver.navigate().to("https://dentalconnect.dexis.com/main.php");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
 
-            // Attendre que la liste des patients soit chargée
-            wait.until(ExpectedConditions.presenceOfElementLocated(
-                    By.cssSelector("li[id^='caseMaster_']")));
+            // Attente du chargement de la liste des cas patients
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("li[id^='caseMaster_']")));
 
-            List<WebElement> caseElements = driver.findElements(
-                    By.cssSelector("li[id^='caseMaster_']"));
+            List<WebElement> caseElements = driver.findElements(By.cssSelector("li[id^='caseMaster_']"));
 
             for (WebElement caseElement : caseElements) {
                 try {
-                    // Récupérer le nom du patient depuis la balise <mark>
-                    WebElement patientElement = caseElement.findElement(
-                            By.cssSelector("mark[id^='casePatient_']"));
-                    String patientName = patientElement.getText().trim();
+                    // Extraction du nom du patient
+                    WebElement patientElement = caseElement.findElement(By.cssSelector("mark[id^='casePatient_']"));
+                    String refPatient = patientElement.getText().trim();
 
-                    // Récupérer l'ID du cas depuis la balise <h2>
-                    WebElement caseIdElement = caseElement.findElement(
-                            By.cssSelector("h2[id^='caseId_']"));
-                    String caseId = caseIdElement.getText().trim();
+                    // Extraction de l'ID du cas
+                    WebElement caseIdElement = caseElement.findElement(By.cssSelector("h2[id^='caseId_']"));
+                    String externalId = caseIdElement.getText().trim();
 
-                    // Récupérer le statut depuis la balise <em>
-                    WebElement statusElement = caseElement.findElement(
-                            By.cssSelector("em[id^='caseStatus_']"));
-                    String status = statusElement.getText().trim();
+                    // S'assurer que les données sont valides
+                    if (refPatient.isEmpty() || externalId.isEmpty())
+                        continue;
 
-                    // Formater les informations du patient
-                    String patientInfo = String.format("%s (ID: %s, Statut: %s)",
-                            patientName, caseId, status);
+                    // Création de l'objet commande
+                    Commande commande = new Commande();
+                    commande.setRefPatient(refPatient);
+                    commande.setVu(false);
+                    commande.setPlateforme(Plateforme.DEXIS);
 
-                    if (!patientName.isEmpty()) {
-                        patients.add(patientInfo);
-                    }
+                    commandes.add(commande);
+
                 } catch (Exception e) {
                     System.err.println("Erreur lors de l'extraction d'un patient: " + e.getMessage());
                 }
             }
 
-            if (patients.isEmpty()) {
-                patients.add("Aucun patient trouvé dans la liste.");
+            // Sauvegarde en base si commandes trouvées
+            if (!commandes.isEmpty()) {
+                commandeRepository.saveAll(commandes);
+            } else {
+                System.out.println("Aucune commande trouvée sur Dexis.");
             }
 
         } catch (Exception e) {
             handleError(e);
-            patients.add("Erreur lors de la récupération des patients: " + e.getMessage());
+            System.err.println("Erreur lors de la récupération des commandes Dexis : " + e.getMessage());
         }
 
-        return patients;
+        return commandes;
     }
 
+    /**
+     * Déconnexion de la plateforme Dexis.
+     */
     @Override
     public String logout() {
         if (driver != null) {
             try {
-                // Navigation vers la page de déconnexion si nécessaire
+                // Navigation vers la page de logout
                 driver.get("https://dentalconnect.dexis.com/logout.php");
             } catch (Exception e) {
                 System.err.println("Erreur lors de la déconnexion: " + e.getMessage());
@@ -149,6 +167,10 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
         return "Déjà déconnecté.";
     }
 
+    /**
+     * Vérifie que l'utilisateur est bien connecté (vérification de l'URL
+     * principale).
+     */
     @Override
     protected boolean verifyLoggedIn() {
         try {

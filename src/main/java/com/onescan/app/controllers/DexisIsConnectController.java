@@ -1,5 +1,6 @@
 package com.onescan.app.controllers;
 
+import com.onescan.app.Entity.Commande;
 import com.onescan.app.services.DexisIsConnectSeleniumService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class DexisIsConnectController {
         this.dexisService = dexisService;
     }
 
+    /**
+     * Connexion à Dexis via Selenium.
+     */
     @PostMapping("/login")
     public ResponseEntity<String> login() {
         String result = dexisService.login();
@@ -28,23 +32,32 @@ public class DexisIsConnectController {
         }
     }
 
+    /**
+     * Vérifie le statut de connexion à Dexis.
+     */
     @GetMapping("/status")
     public ResponseEntity<String> status() {
         boolean connected = dexisService.isLoggedIn();
-        return ResponseEntity.ok("Statut : " + (connected ? "Connecté" : "Non connecté"));
+        return ResponseEntity.ok(connected ? "Connecté" : "Non connecté");
     }
 
-    @GetMapping("/patients")
-    public ResponseEntity<?> getPatients() {
-        List<String> patients = dexisService.fetchPatients();
+    /**
+     * Récupération des commandes depuis Dexis.
+     */
+    @GetMapping("/commandes")
+    public ResponseEntity<?> getCommandes() {
+        List<Commande> commandes = dexisService.fetchCommandes();
 
-        if (!patients.isEmpty() && patients.get(0).startsWith("Erreur")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(patients.get(0));
+        if (commandes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Aucune commande trouvée.");
         }
 
-        return ResponseEntity.ok(patients);
+        return ResponseEntity.ok(commandes);
     }
 
+    /**
+     * Déconnexion de Dexis.
+     */
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         String result = dexisService.logout();

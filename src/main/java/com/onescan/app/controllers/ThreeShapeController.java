@@ -1,5 +1,6 @@
 package com.onescan.app.controllers;
 
+import com.onescan.app.Entity.Commande;
 import com.onescan.app.services.ThreeShapeSeleniumService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,18 +42,18 @@ public class ThreeShapeController {
     }
 
     /**
-     * Récupère la liste des patients depuis ThreeShape.
+     * Récupère la liste des commandes depuis ThreeShape.
      */
-    @GetMapping("/patients")
-    public ResponseEntity<?> getPatients() {
-        List<String> patients = threeShapeService.fetchPatients();
+    @GetMapping("/commandes")
+    public ResponseEntity<?> getCommandes() {
+        List<Commande> commandes = threeShapeService.fetchCommandes();
 
-        // Si la première ligne contient une erreur, on renvoie 401 Unauthorized
-        if (!patients.isEmpty() && patients.get(0).startsWith("Erreur")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(patients.get(0));
+        if (commandes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Erreur : Impossible de se connecter à 3Shape ou aucune donnée trouvée.");
         }
 
-        return ResponseEntity.ok(patients);
+        return ResponseEntity.ok(commandes);
     }
 
     /**
