@@ -14,7 +14,7 @@ import com.onescan.app.Entity.Commande;
 import com.onescan.app.repository.CommandeRepository;
 
 @Controller
-@RequestMapping("/api/commandes")
+@RequestMapping("/api/public/commandes")
 public class CommandeController {
 
     @Autowired
