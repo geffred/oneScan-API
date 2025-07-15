@@ -56,3 +56,31 @@ GET http://localhost:8080/api/meditlink/commandes
 ###
 POST http://localhost:8080/api/meditlink/logout
 Content-Type: application/json
+
+
+### Commandes API
+GET http://localhost:8080/api/commandes
+
+### Création de compte
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Jean",
+  "lastName": "Dupont",
+  "email": "jean.dupont@exemple.com",
+  "password": "Password123!",
+  "phone": "+33612345678",
+  "country": "FR",
+  "companyType": "dentiste",
+  "newsletter": true
+}
+
+### connexion
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jean.dupont@exemple.com",
+  "password": "Password123!"
+}
