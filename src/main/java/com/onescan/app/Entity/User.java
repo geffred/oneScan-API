@@ -36,6 +36,10 @@ public class User implements UserDetails {
     private String companyType;
     private boolean newsletter;
 
+    // Ajoutez ceci dans la classe User
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Platform> platforms;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

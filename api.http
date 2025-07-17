@@ -84,3 +84,44 @@ Content-Type: application/json
   "email": "jean.dupont@exemple.com",
   "password": "Password123!"
 }
+
+### Utilisateur connecté
+
+GET http://localhost:8080/api/auth/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0Mzk5OSwiZXhwIjoxNzUyODMwMzk5fQ.Ejt4MYHPyOoMnqLsmGjdPHdauaYG-YGXnuI5FIS47Wk
+
+
+
+### Création d'une plateforme (authentification requise)
+POST http://localhost:8080/api/platforms
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+
+{
+  "name": "Itero",
+  "email": "3shape@test.com",
+  "password": "iteroPass123",
+  "userId": 1
+}
+
+### Récupérer toutes les plateformes d'un utilisateur
+GET http://localhost:8080/api/platforms/user/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+
+### Mettre à jour une plateforme
+PUT http://localhost:8080/api/platforms/1
+Content-Type: application/json
+Authorization: Bearer eeyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+
+{
+  "name": "Itero Pro",
+  "email": "itero.pro@test.com",
+  "password": "newPassword123",
+  "userId": 1
+}
+
+### Supprimer une plateforme
+DELETE http://localhost:8080/api/platforms/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MjcxMjMzOCwiZXhwIjoxNzUyNzk4NzM4fQ.dWyvnVnqHVx1f8I576j5YJR_6HngPOSfovCXtCZ_DI4
+
