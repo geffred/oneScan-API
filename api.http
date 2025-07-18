@@ -7,6 +7,7 @@ GET http://localhost:8080/api/itero/status
 
 ###
 GET http://localhost:8080/api/itero/commandes
+
 ###
 POST http://localhost:8080/api/itero/logout
 Content-Type: application/json
@@ -52,6 +53,8 @@ GET http://localhost:8080/api/meditlink/status
 
 ###
 GET http://localhost:8080/api/meditlink/commandes
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+
 
 ###
 POST http://localhost:8080/api/meditlink/logout
@@ -87,16 +90,16 @@ Content-Type: application/json
 
 ### Utilisateur connecté
 
-GET http://localhost:8080/api/auth/me
+GET http://localhost:8080/api/auth/user/jean.dupont@exemple.com
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0Mzk5OSwiZXhwIjoxNzUyODMwMzk5fQ.Ejt4MYHPyOoMnqLsmGjdPHdauaYG-YGXnuI5FIS47Wk
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjg0NTEyNywiZXhwIjoxNzUyOTMxNTI3fQ.e1dBuvgczuId3YCz7z9nSfzQ2ogEt7WrHOoq0i2LuTg
 
 
 
 ### Création d'une plateforme (authentification requise)
 POST http://localhost:8080/api/platforms
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjg0NTEyNywiZXhwIjoxNzUyOTMxNTI3fQ.e1dBuvgczuId3YCz7z9nSfzQ2ogEt7WrHOoq0i2LuTg
 
 {
   "name": "Itero",
@@ -107,12 +110,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlL
 
 ### Récupérer toutes les plateformes d'un utilisateur
 GET http://localhost:8080/api/platforms/user/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjg0NTEyNywiZXhwIjoxNzUyOTMxNTI3fQ.e1dBuvgczuId3YCz7z9nSfzQ2ogEt7WrHOoq0i2LuTg
 
 ### Mettre à jour une plateforme
 PUT http://localhost:8080/api/platforms/1
 Content-Type: application/json
-Authorization: Bearer eeyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjg0NTEyNywiZXhwIjoxNzUyOTMxNTI3fQ.e1dBuvgczuId3YCz7z9nSfzQ2ogEt7WrHOoq0i2LuTg
 
 {
   "name": "Itero Pro",
@@ -123,5 +126,5 @@ Authorization: Bearer eeyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxl
 
 ### Supprimer une plateforme
 DELETE http://localhost:8080/api/platforms/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MjcxMjMzOCwiZXhwIjoxNzUyNzk4NzM4fQ.dWyvnVnqHVx1f8I576j5YJR_6HngPOSfovCXtCZ_DI4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjg0NTEyNywiZXhwIjoxNzUyOTMxNTI3fQ.e1dBuvgczuId3YCz7z9nSfzQ2ogEt7WrHOoq0i2LuTg
 
