@@ -149,7 +149,7 @@ public class MeditLinkSeleniumService extends BaseSeleniumService {
         commande.setExternalId(Long.parseLong(externalId));
         commande.setVu(false);
         commande.setPlateforme(Plateforme.MEDITLINK);
-        commande.setCabinet(row.findElement(By.cssSelector("td:nth-child(2) span")).getText().trim());
+        commande.setCabinet(row.findElement(By.cssSelector("td:nth-child(6) span")).getText().trim());
 
         try {
             String creationDateStr = row.findElement(By.cssSelector("td:nth-child(4) span")).getText().trim();
@@ -194,4 +194,111 @@ public class MeditLinkSeleniumService extends BaseSeleniumService {
             return false;
         }
     }
+
+    /**
+     * Récupère le commentaire d'une commande spécifique
+     * 
+     * @param externalId L'ID externe de la commande
+     * @return Le commentaire ou null si non trouvé/erreur
+     */
+    public String getCommentaire(Long externalId) {
+        if (!ensureLoggedIn()) {
+            System.err.println("[MeditLink] Erreur de connexion pour récupération commentaire");
+            return null;
+        }
+
+        try {
+            // Navigation vers la page de détail
+            String detailUrl = BASE_URL + "/inbox/detail/" + externalId;
+            driver.navigate().to(detailUrl);
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+            // Attendre le chargement de la page
+            wait.until(ExpectedConditions.urlContains("/inbox/detail/"));
+
+            // Rechercher le textarea avec les attributs spécifiés
+            WebElement commentaireTextarea = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("textarea[data-v-8a2006a2][data-v-2adbe6cd-s].show-scrollbar[disabled]")));
+
+            // Récupérer le texte du commentaire
+            String commentaire = commentaireTextarea.getAttribute("value");
+            if (commentaire == null || commentaire.trim().isEmpty()) {
+                commentaire = commentaireTextarea.getText();
+            }
+
+            System.out.println("[MeditLink] Commentaire récupéré pour ID " + externalId + ": " +
+                    (commentaire.isEmpty() ? "Aucun commentaire" : "Commentaire présent"));
+
+            return commentaire.trim().isEmpty() ? null : commentaire.trim();
+
+        } catch (Exception e) {
+            System.err.println(
+                    "[MeditLink] Erreur récupération commentaire pour ID " + externalId + ": " + e.getMessage());
+            handleError(e);
+            return null;
+        }
+    }
+
+    /**
+     * Récupère tous les commentaires pour toutes les commandes
+     * 
+     * @return Map avec externalId comme clé et commentaire comme valeur
+     */
+    public java.util.Map<Long, String> getAllCommentaires() {
+        java.util.Map<Long, String> commentaires = new java.util.HashMap<>();
+
+        if (!ensureLoggedIn()) {
+            System.err.println("[MeditLink] Erreur de connexion pour récupération de tous les commentaires");
+            return commentaires;
+        }
+
+        try {
+            // Récupérer d'abord toutes les commandes pour avoir les IDs
+            driver.navigate().to(BASE_URL + "/inbox");
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+
+            // Attente du chargement du tableau
+            By tableRowLocator = By.cssSelector("tr.main-body-tr");
+            wait.until(ExpectedConditions.presenceOfElementLocated(tableRowLocator));
+
+            List<WebElement> rows = driver.findElements(tableRowLocator);
+            List<Long> externalIds = new ArrayList<>();
+
+            // Extraire tous les IDs externes
+            for (WebElement row : rows) {
+                try {
+                    String externalIdStr = row.findElement(By.cssSelector("td:nth-child(7) span")).getText().trim();
+                    if (!externalIdStr.isEmpty()) {
+                        externalIds.add(Long.parseLong(externalIdStr));
+                    }
+                } catch (Exception e) {
+                    System.err.println("[MeditLink] Erreur extraction ID: " + e.getMessage());
+                }
+            }
+
+            System.out.println("[MeditLink] Récupération des commentaires pour " + externalIds.size() + " commandes");
+
+            // Récupérer le commentaire pour chaque ID
+            for (Long externalId : externalIds) {
+                String commentaire = getCommentaire(externalId);
+                if (commentaire != null && !commentaire.isEmpty()) {
+                    commentaires.put(externalId, commentaire);
+                }
+
+                // Petite pause entre les requêtes pour éviter la surcharge
+                Thread.sleep(1000);
+            }
+
+            System.out.println("[MeditLink] " + commentaires.size() + " commentaires récupérés sur "
+                    + externalIds.size() + " commandes");
+
+        } catch (Exception e) {
+            System.err.println("[MeditLink] Erreur récupération tous commentaires: " + e.getMessage());
+            handleError(e);
+        }
+
+        return commentaires;
+    }
+
 }

@@ -13,11 +13,16 @@ import com.onescan.app.Entity.Plateforme;
 import com.onescan.app.repository.CommandeRepository;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class DexisIsConnectSeleniumService extends BaseSeleniumService {
+
+    // Formatter pour les dates au format dd/MM/yyyy
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // Chargement des variables d'environnement (.env)
     private final Dotenv dotenv = Dotenv.load();
@@ -92,7 +97,7 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
 
         // Vérifie que l'utilisateur est connecté avant de continuer
         if (!ensureLoggedIn()) {
-            System.err.println("Erreur : Impossible de se connecter à Dexis");
+            System.err.println("[Dexis] Erreur : Impossible de se connecter à Dexis");
             return commandes;
         }
 
@@ -100,51 +105,126 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
             driver.navigate().to("https://dentalconnect.dexis.com/main.php");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
 
-            // Attente du chargement de la liste des cas patients
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("li[id^='caseMaster_']")));
+            // Attendre le chargement des sections de cas par jour
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("section.masterCaseListOfDay")));
 
-            List<WebElement> caseElements = driver.findElements(By.cssSelector("li[id^='caseMaster_']"));
+            // Récupérer toutes les sections de jours
+            List<WebElement> daySections = driver.findElements(By.cssSelector("section.masterCaseListOfDay"));
 
-            for (WebElement caseElement : caseElements) {
+            System.out.println("[Dexis] " + daySections.size() + " sections de jours trouvées");
+
+            for (WebElement daySection : daySections) {
                 try {
-                    // Extraction du nom du patient
-                    WebElement patientElement = caseElement.findElement(By.cssSelector("mark[id^='casePatient_']"));
-                    String refPatient = patientElement.getText().trim();
+                    // Récupérer la date de réception depuis l'en-tête de la section
+                    LocalDate dateReception = extractDateFromSection(daySection);
 
-                    // Extraction de l'ID du cas
-                    WebElement caseIdElement = caseElement.findElement(By.cssSelector("h2[id^='caseId_']"));
-                    String externalId = caseIdElement.getText().trim();
+                    // Récupérer tous les cas dans cette section
+                    List<WebElement> caseElements = daySection.findElements(By.cssSelector("li[id^='caseMaster_']"));
 
-                    // S'assurer que les données sont valides
-                    if (refPatient.isEmpty() || externalId.isEmpty())
-                        continue;
+                    System.out
+                            .println("[Dexis] " + caseElements.size() + " cas trouvés pour la date: " + dateReception);
 
-                    // Création de l'objet commande
-                    Commande commande = new Commande();
-                    commande.setRefPatient(refPatient);
-                    commande.setVu(false);
-                    commande.setPlateforme(Plateforme.DEXIS);
-
-                    commandes.add(commande);
-
+                    for (WebElement caseElement : caseElements) {
+                        try {
+                            Commande commande = extractCommandeFromCase(caseElement, dateReception);
+                            if (commande != null) {
+                                commandes.add(commande);
+                            }
+                        } catch (Exception e) {
+                            System.err.println("[Dexis] Erreur lors de l'extraction d'un cas: " + e.getMessage());
+                        }
+                    }
                 } catch (Exception e) {
-                    System.err.println("Erreur lors de l'extraction d'un patient: " + e.getMessage());
+                    System.err.println("[Dexis] Erreur lors du traitement d'une section de jour: " + e.getMessage());
                 }
             }
 
             // Sauvegarde en base si commandes trouvées
             if (!commandes.isEmpty()) {
                 commandeRepository.saveAll(commandes);
+                System.out.println("[Dexis] " + commandes.size() + " commandes sauvegardées");
             } else {
-                System.out.println("Aucune commande trouvée sur Dexis.");
+                System.out.println("[Dexis] Aucune commande trouvée sur Dexis.");
             }
 
         } catch (Exception e) {
             handleError(e);
-            System.err.println("Erreur lors de la récupération des commandes Dexis : " + e.getMessage());
+            System.err.println("[Dexis] Erreur lors de la récupération des commandes: " + e.getMessage());
         }
 
-        return commandes;
+        return commandeRepository.findAll();
+    }
+
+    /**
+     * Extrait la date de réception depuis l'en-tête de section
+     */
+    private LocalDate extractDateFromSection(WebElement daySection) {
+        try {
+            WebElement timeElement = daySection.findElement(By.cssSelector("header time"));
+            String dateStr = timeElement.getAttribute("datetime");
+
+            // Le datetime est au format "11/07/2025"
+            return LocalDate.parse(dateStr, DATE_FORMATTER);
+        } catch (Exception e) {
+            System.err.println("[Dexis] Erreur extraction date section: " + e.getMessage());
+            return LocalDate.now(); // Valeur par défaut
+        }
+    }
+
+    /**
+     * Extrait les informations d'une commande depuis un élément de cas
+     */
+    private Commande extractCommandeFromCase(WebElement caseElement, LocalDate dateReception) {
+        try {
+            // Extraction du nom du patient
+            WebElement patientElement = caseElement.findElement(By.cssSelector("mark[id^='casePatient_']"));
+            String refPatient = patientElement.getText().trim();
+
+            // Extraction de l'ID du cas et conversion pour externalId
+            WebElement caseIdElement = caseElement.findElement(By.cssSelector("h2[id^='caseId_']"));
+            String caseIdFull = caseIdElement.getText().trim(); // Ex: "NGO-6991"
+
+            // Extraire la partie après le tiret
+            String externalIdStr = null;
+            if (caseIdFull.contains("-")) {
+                externalIdStr = caseIdFull.split("-")[1];
+            }
+
+            // Extraction du partenaire/cabinet
+            WebElement partnerElement = caseElement.findElement(By.cssSelector("mark[id^='casePartner_']"));
+            String cabinet = partnerElement.getText().trim();
+
+            // Validation des données essentielles
+            if (refPatient.isEmpty() || externalIdStr == null || externalIdStr.isEmpty()) {
+                System.err.println("[Dexis] Données manquantes pour un cas - Patient: " + refPatient + ", ExternalId: "
+                        + externalIdStr);
+                return null;
+            }
+
+            // Création de l'objet commande
+            Commande commande = new Commande();
+            commande.setRefPatient(refPatient);
+            commande.setExternalId(Long.parseLong(externalIdStr));
+            commande.setDateReception(dateReception);
+            commande.setCabinet(cabinet);
+            commande.setDateEcheance(null); // Défini à null comme demandé
+            commande.setVu(false);
+            commande.setPlateforme(Plateforme.DEXIS);
+
+            System.out.println("[Dexis] Commande extraite - Patient: " + refPatient +
+                    ", ID: " + externalIdStr +
+                    ", Cabinet: " + cabinet +
+                    ", Date: " + dateReception);
+
+            return commande;
+
+        } catch (NumberFormatException e) {
+            System.err.println("[Dexis] Erreur conversion externalId: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("[Dexis] Erreur lors de l'extraction d'un cas: " + e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -156,13 +236,14 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
             try {
                 // Navigation vers la page de logout
                 driver.get("https://dentalconnect.dexis.com/logout.php");
+                return "Déconnexion réussie.";
             } catch (Exception e) {
-                System.err.println("Erreur lors de la déconnexion: " + e.getMessage());
+                System.err.println("[Dexis] Erreur lors de la déconnexion: " + e.getMessage());
+                return "Erreur déconnexion: " + e.getMessage();
             } finally {
                 closeDriver();
                 isLoggedIn = false;
             }
-            return "Déconnexion réussie.";
         }
         return "Déjà déconnecté.";
     }
@@ -173,6 +254,9 @@ public class DexisIsConnectSeleniumService extends BaseSeleniumService {
      */
     @Override
     protected boolean verifyLoggedIn() {
+        if (driver == null)
+            return false;
+
         try {
             driver.navigate().to("https://dentalconnect.dexis.com/main.php");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));

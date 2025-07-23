@@ -31,9 +31,6 @@ public class Commande {
     @Column(name = "cabinet")
     private String cabinet;
 
-    @Column(name = "pdf")
-    private String pdf;
-
     @Column(name = "commentaire")
     private String commentaire;
 
@@ -48,7 +45,7 @@ public class Commande {
     }
 
     public Commande(Long externalId, String refPatient, LocalDate dateReception, String file3d,
-            Plateforme plateforme, String cabinet, String pdf, String commentaire, LocalDate dateEcheance,
+            Plateforme plateforme, String cabinet, String commentaire, LocalDate dateEcheance,
             Boolean vu) {
         this.externalId = externalId;
         this.refPatient = refPatient;
@@ -56,7 +53,6 @@ public class Commande {
         this.file3d = file3d;
         this.plateforme = plateforme;
         this.cabinet = cabinet;
-        this.pdf = pdf;
         this.commentaire = commentaire;
         this.dateEcheance = dateEcheance;
         this.vu = vu;
@@ -118,14 +114,6 @@ public class Commande {
 
     public void setCabinet(String cabinet) {
         this.cabinet = cabinet;
-    }
-
-    public String getPdf() {
-        return pdf;
-    }
-
-    public void setPdf(String pdf) {
-        this.pdf = pdf;
     }
 
     public String getCommentaire() {

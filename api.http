@@ -7,6 +7,7 @@ GET http://localhost:8080/api/itero/status
 
 ###
 GET http://localhost:8080/api/itero/commandes
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzE4Nzk5NCwiZXhwIjoxNzUzMjc0Mzk0fQ.wOlH-QToU2Rsou-qtHAYgtgkJGjwWjmXXktuyszekRU
 
 ###
 POST http://localhost:8080/api/itero/logout
@@ -27,6 +28,7 @@ POST http://localhost:8080/api/threeshape/logout
 
 ###
 GET http://localhost:8080/api/threeshape/commandes
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzE4OTU3NCwiZXhwIjoxNzUzMjc1OTc0fQ.HsDaMAa0fhSKMWym43nXB5tyYH6tgoCpzOvbBAQB27w
 
 
 
@@ -41,21 +43,21 @@ POST http://localhost:8080/api/dexis-isconnect/logout
 Content-Type: application/json
 ###
 GET http://localhost:8080/api/dexis-isconnect/commandes
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzE4NTg1MCwiZXhwIjoxNzUzMjcyMjUwfQ.jv_WI3DON2ZQaIL1wqSLIdx6NsWXIhAxhOCmi7I4nhk
 
 
 
 ### MeditLink API
 POST http://localhost:8080/api/meditlink/login
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzE3ODA3NSwiZXhwIjoxNzUzMjY0NDc1fQ.X4cuVv5BHhxENWzx-x_4pEdU89TuDlUpx3GO19JLwFE
 
 ###
 GET http://localhost:8080/api/meditlink/status
 
 ###
 GET http://localhost:8080/api/meditlink/commandes
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjc0NTEyOCwiZXhwIjoxNzUyODMxNTI4fQ.Kx2KfJiLnNsy0UfD-soI2zKvkdaiBlNRDCu9VsYNZtQ
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzI2MDIwOCwiZXhwIjoxNzUzMzQ2NjA4fQ.224msMx89i8Cdp33gux14NF5ReudPAY4QcV5Qb_OiIM
 ###
 POST http://localhost:8080/api/meditlink/logout
 Content-Type: application/json
@@ -127,4 +129,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlL
 ### Supprimer une plateforme
 DELETE http://localhost:8080/api/platforms/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1Mjg0NTEyNywiZXhwIjoxNzUyOTMxNTI3fQ.e1dBuvgczuId3YCz7z9nSfzQ2ogEt7WrHOoq0i2LuTg
+
+### Commentaire d'une commande spécifique
+GET http://localhost:8080/api/meditlink/commentaire/20156204
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzE3MTEwMiwiZXhwIjoxNzUzMjU3NTAyfQ.D80Q5dhKkCtGjWUx4d2L98hDZrDl-6HIph9cOQqzVyY
+
+### Tous les commentaires
+GET http://localhost:8080/api/meditlink/commentaires
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuLmR1cG9udEBleGVtcGxlLmNvbSIsImlhdCI6MTc1MzE3NDQxMCwiZXhwIjoxNzUzMjYwODEwfQ.muLIYQbX-ijHKKdSSXN3C1T7vWM4YbF5rL2E909-Hng
 

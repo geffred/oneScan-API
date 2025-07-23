@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/meditlink")
@@ -69,4 +70,55 @@ public class MeditLinkController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
+
+    /**
+     * Récupère le commentaire d'une commande spécifique par son ID externe
+     */
+    @GetMapping("/commentaire/{externalId}")
+    public ResponseEntity<?> getCommentaire(@PathVariable Long externalId) {
+        try {
+            String commentaire = meditLinkService.getCommentaire(externalId);
+
+            if (commentaire == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Aucun commentaire trouvé pour la commande ID: " + externalId);
+            }
+
+            if (commentaire.isEmpty()) {
+                return ResponseEntity.ok("Commentaire vide pour la commande ID: " + externalId);
+            }
+
+            return ResponseEntity.ok(Map.of(
+                    "externalId", externalId,
+                    "commentaire", commentaire));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de la récupération du commentaire: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Récupère tous les commentaires pour toutes les commandes
+     */
+    @GetMapping("/commentaires")
+    public ResponseEntity<?> getAllCommentaires() {
+        try {
+            Map<Long, String> commentaires = meditLinkService.getAllCommentaires();
+
+            if (commentaires.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                        .body("Aucun commentaire trouvé ou problème de connexion");
+            }
+
+            return ResponseEntity.ok(Map.of(
+                    "total", commentaires.size(),
+                    "commentaires", commentaires));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de la récupération des commentaires: " + e.getMessage());
+        }
+    }
+
 }
